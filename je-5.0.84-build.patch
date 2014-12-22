@@ -1,0 +1,150 @@
+--- build.xml	2013-07-09 23:51:22.000000000 +0200
++++ build.xml-gil	2013-09-14 16:37:31.994830238 +0200
+@@ -1717,12 +1717,12 @@
+ 
+     <target name="update-version" depends="compile-src, compile-dist">
+        <!-- Create an up to date property file for the build -->
+-       <java fork="yes" jvm="${jvm}" failonerror="true"
++       <!--java fork="yes" jvm="${jvm}" failonerror="true"
+              classname="CreateRELEASEFile"
+ 	     classpathref="dist.classpath">
+           <jvmarg line="${jvmargs}"/>
+ 	  <arg value="${build.propertyfile}"/>
+-       </java>
++       </java-->
+ 
+        <!-- read it in -->
+        <property file="${build.propertyfile}"/>
+@@ -1739,59 +1739,6 @@
+         <tstamp>
+ 	   <format property="release.date" pattern="MMMMMMMM dd, yyyy"/>
+ 	</tstamp>
+-
+-	<!-- Copy the main page, images and release notes, to the
+-             docs directory, putting in the release version where
+-	     appropriate -->
+-        <copy overwrite="true" todir="${doc.dir}">
+-	   <filterset>
+-	       <filter token="RELEASE_VERSION" value="${release.version}"/>
+-	       <filter token="RELEASE_NUMERIC_VERSION"
+-	               value="${release.numeric.versionc.version}"/>
+-	       <filter token="DATE" value="${release.date}"/>
+-	   </filterset>
+-	   <fileset dir="${docsrc.dir}">
+-               <include name="*.html"/>
+-               <include name="*.css"/>
+-               <exclude name="style.css"/>
+-               <exclude name="style6.css"/>
+-           </fileset>
+-        </copy>
+-        <copy todir="${doc.dir}/images">
+-	    <fileset dir="${docsrc.dir}/images"/>
+-	</copy>
+-        <copy todir="${doc.dir}/sleepycat">
+-	    <fileset dir="${docsrc.dir}/sleepycat"/>
+-	</copy>
+-        <copy todir="${doc.dir}/jconsole">
+-	    <fileset dir="${docsrc.dir}/jconsole"/>
+-	</copy>
+-
+-	<!-- Copy everything for the Getting Started Guide, the
+-             Writing Transactional Applications Guide and the
+-             ReplicationGuide to the docs directory -->
+-        <copy todir="${doc.dir}/GettingStartedGuide">
+-	    <fileset dir="${docsrc.dir}/GettingStartedGuide">
+-	    </fileset>
+-	</copy>
+-
+-        <copy todir="${doc.dir}/TransactionGettingStarted">
+-	    <fileset dir="${docsrc.dir}/TransactionGettingStarted">
+-	    </fileset>
+-	</copy>
+-
+-        <copy todir="${doc.dir}/ReplicationGuide">
+-	    <fileset dir="${docsrc.dir}/ReplicationGuide">
+-	    </fileset>
+-	</copy>
+-
+-	<!-- Copy everything for the collections tutorial to the docs
+-             directory -->
+-        <copy todir="${doc.dir}/collections">
+-	    <fileset dir="${docsrc.dir}/collections">
+-	    </fileset>
+-        </copy>
+-
+ 	<antcall target="javadoc-src"/>
+         <!--
+         -->
+@@ -1801,15 +1748,11 @@
+     <available file="${docsrc.dir}" type="dir" property="UserOrMember"/>
+ 
+     <target name="copy-doc-materials" if="UserOrMember">
+-        <copy overwrite="true" todir="${doclet.src.dir}">
+-            <fileset dir="${docsrc.dir}/doclet"/>
+-	</copy>
+     </target>
+ 
+     <target name="javadoc-src"
+             depends="init, copy-doc-materials, get-boot-classpath,
+                      compute-javadoc-css">
+-	<antcall target="jar-hidingdoclet"/>
+         <delete dir="${doc.javadir}"/>
+         <mkdir dir="${doc.javadir}"/>
+         <!-- Run javadoc on public API -->
+@@ -1822,13 +1765,11 @@
+                  source="${jdk.version}"
+                  bootclasspath="${jdk.boot.class.path}"
+ 		 use="true"
+-		 docletpath="docs/HidingDoclet.jar"
+-		 stylesheetfile="${javadoc.css}"
+ 		 windowtitle="Oracle - Berkeley DB Java Edition API">
+ 	  <classpath refid="j2ee.classpath"/>
+ 	  <classpath path="${ant.library.dir}/ant.jar"/>
++	  <classpath path="/usr/share/java/objectweb-asm4/asm.jar"/>
+ 	  <arg value="-author"/>
+-	  <doclet name="HidingDoclet"/>
+           <group title="Berkeley DB Java Edition Packages">
+               <package name="com.sleepycat.je*"/>
+               <package name="com.sleepycat.je.util"/>
+@@ -1887,15 +1828,10 @@
+           <package name="com.sleepycat.persist.raw"/>
+           <package name="com.sleepycat.util"/>
+           <link href="http://docs.oracle.com/javase/1.5.0/docs/api"/>
+-          <link href="http://docs.oracle.com/javase/6/docs/api"/>
++	  <link href="/usr/share/javadoc/java"/>
+           <arg value="-J-Dhttp.proxyHost=${javadoc.proxy.host}"/>
+           <arg value="-J-Dhttp.proxyPort=${javadoc.proxy.port}"/>
+         </javadoc>
+-        <!-- Copy the standard Java CSS style sheet -->
+-        <copy tofile="${doc.javadir}/standard-stylesheet.css">
+-          <javaresource
+-            name="com/sun/tools/doclets/internal/toolkit/resources/stylesheet.css"/>
+-        </copy>
+     </target>
+ 
+     <target name="javadoc-examples"
+@@ -1910,7 +1846,6 @@
+ 		 access="public"
+                  source="${jdk.version}"
+                  bootclasspath="${jdk.boot.class.path}"
+-		 stylesheetfile="${javadoc.css}"
+ 		 windowtitle="Oracle - Berkeley DB Java Edition Examples">
+ 	  <classpath refid="j2ee.classpath"/>
+ 	  <header><![CDATA[<b>Berkeley DB Java Edition Examples</b><br><font size=\"-1\"> version ${release.version}</font>]]>
+@@ -1926,15 +1861,10 @@
+           -->
+           <link href="../java"/>
+           <link href="http://docs.oracle.com/javase/1.5.0/docs/api"/>
+-          <link href="http://docs.oracle.com/javase/6/docs/api"/>
++          <link href="/usr/share/javadoc/java"/>
+           <arg value="-J-Dhttp.proxyHost=${javadoc.proxy.host}"/>
+           <arg value="-J-Dhttp.proxyPort=${javadoc.proxy.port}"/>
+         </javadoc>
+-        <!-- Copy the standard Java CSS style sheet -->
+-        <copy tofile="${doc.examplesdir}/standard-stylesheet.css">
+-          <javaresource
+-            name="com/sun/tools/doclets/internal/toolkit/resources/stylesheet.css"/>
+-        </copy>
+     </target>
+ 
+     <target name="install">
