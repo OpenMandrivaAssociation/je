@@ -1,8 +1,10 @@
+%{?_javapackages_macros:%_javapackages_macros}
 Name:          je
 Version:       5.0.97
-Release:       3%{?dist}
+Release:       3.1
 Summary:       Berkeley DB Java Edition
 License:       BSD
+Group:         Databases
 URL:           http://www.oracle.com/us/products/database/berkeley-db/je/overview/index.html
 # use SOURCE2: sh je-create-tarball.sh < VERSION >
 Source0:       %{name}-%{version}-clean.tar.xz
@@ -71,9 +73,7 @@ This package contains javadoc for %{name}-examples.
 %patch0 -p0
 cp -p %{SOURCE1} pom.xml
 %patch1 -p1
-%if %{?fedora} >= 20
 sed -i "s|objectweb-asm4|objectweb-asm|" build.xml
-%endif
 
 %build
 
