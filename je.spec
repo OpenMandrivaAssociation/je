@@ -1,7 +1,7 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:          je
 Version:       5.0.97
-Release:       3.1
+Release:       3.2
 Summary:       Berkeley DB Java Edition
 License:       BSD
 Group:         Databases
