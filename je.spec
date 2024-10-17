@@ -5,7 +5,7 @@ Release:       3.3
 Summary:       Berkeley DB Java Edition
 License:       BSD
 Group:         Databases
-URL:           http://www.oracle.com/us/products/database/berkeley-db/je/overview/index.html
+URL:           https://www.oracle.com/us/products/database/berkeley-db/je/overview/index.html
 # use SOURCE2: sh je-create-tarball.sh < VERSION >
 Source0:       %{name}-%{version}-clean.tar.xz
 Source1:       http://download.oracle.com/maven/com/sleepycat/%{name}/%{version}/%{name}-%{version}.pom
